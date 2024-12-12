@@ -1,0 +1,4 @@
+command_injection, ;|&&|\|, \b(?:rm|sudo|chmod|chown|wget|curl|bash|sh)\b
+xss, <script>, </script>
+sql, SELECT, DROP, INSERT, DELETE, UPDATE, WHERE
+python_injection, __import__, eval, exec, open, os\., subprocess\.

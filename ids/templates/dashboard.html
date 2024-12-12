@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Intrusion Detection System</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        .inline-divs {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .inline-divs .section {
+            width: 40%; /* 48% of the container's width */
+            margin-bottom: 20px;
+            background-color: #333; /* Dark background for each section */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-right: auto;
+            margin-left: auto;
+        }
+        .full-width {
+            width: 90%;
+            margin: 0 auto;
+            background-color: #333; /* Dark background for full-width section */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        input {
+            width: calc(50% - 20px);
+            margin-right: 10px;
+        }
+        button {
+            background-color: #00bcd4;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #008c99;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        ul li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>MQTT Intrusion Detection System</h1>
+
+    <!-- Inline Divs: Rate Info and Malformed Requests -->
+    <div class="inline-divs">
+        <div class="section">
+            <h2>Rate Information</h2>
+            <input type="text" id="ip_input" placeholder="Enter IP Address">
+            <button onclick="getRate()">Get Rate</button>
+            <p id="rate_output"></p>
+        </div>
+
+        <div class="section">
+            <h2>Malformed Requests</h2>
+            <ul id="malformed_requests"></ul>
+        </div>
+    </div>
+
+    <!-- Inline Divs: Flood Data and Active Connections -->
+    <div class="inline-divs">
+        <div class="section">
+            <h2>Flood Data</h2>
+            <input type="number" id="limit_topics_sec" placeholder="Limit Topics/Second">
+            <input type="number" id="limit_num_topics" placeholder="Limit Number of Topics">
+            <button onclick="getFloodData()">Get Flood Data</button>
+            <ul id="flood_data"></ul>
+        </div>
+
+        <div class="section">
+            <h2>Active Connections</h2>
+            <ul id="active_connections"></ul>
+        </div>
+    </div>
+
+    <!-- Full Width Section: Ban IP -->
+    <div class="full-width">
+        <h2>Ban IP Address</h2>
+        <input type="text" id="ban_ip" placeholder="Enter IP to ban">
+        <input type="number" id="ban_duration" placeholder="Duration (seconds)">
+        <input type="text" id="ban_key" placeholder="Enter Secret Key">
+        <button onclick="banIp()">Ban IP</button>
+    </div>
+
+    <script>
+        function getRate() {
+            const ip = $("#ip_input").val();
+            $.post("/rate", { ip: ip }, function(data) {
+                $("#rate_output").text(data.rate_data);
+            });
+        }
+
+        function getMalformedRequests() {
+            $.get("/malformed_requests", function(data) {
+                const list = $("#malformed_requests");
+                list.empty();
+                data.malformed_requests.forEach(function(item) {
+                    list.append("<li>" + item + "</li>");
+                });
+            });
+        }
+
+        function getFloodData() {
+            const limit_topics_sec = $("#limit_topics_sec").val();
+            const limit_num_topics = $("#limit_num_topics").val();
+            $.post("/flood_data", { limit_topics_sec: limit_topics_sec, limit_num_topics: limit_num_topics }, function(data) {
+                const list = $("#flood_data");
+                list.empty();
+                data.flood_data.forEach(function(item) {
+                    list.append("<li>" + item + "</li>");
+                });
+            });
+        }
+
+        function getActiveConnections() {
+            $.get("/active_connections", function(data) {
+                const list = $("#active_connections");
+                list.empty();
+                if (data.connections === "No active connections") {
+                    list.append("<li>No active connections</li>");
+                } else {
+                    data.connections.forEach(function(ip) {
+                        list.append("<li>" + ip + "</li>");
+                    });
+                }
+            });
+        }
+
+        function banIp() {
+            const ip = $("#ban_ip").val();
+            const duration = $("#ban_duration").val();
+            const key = $("#ban_key").val();
+            $.post("http://54.209.251.197:8090/ban", { ip: ip, time: duration, key: key }, function(data) {
+                alert(data.message || data.error);
+            });
+        }
+
+        setInterval(getActiveConnections, 2000);
+        setInterval(getMalformedRequests, 5000);
+    </script>
+
+</body>
+</html>
+

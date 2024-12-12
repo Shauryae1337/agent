@@ -1,0 +1,6 @@
+IP: 14.139.110.137, ID: auto-2A0B15B0-6858-E077-2414-C166CBC0B9EE, Topics Published: 1, Topics/Second: 0.33
+IP: 157.32.74.53, ID: auto-07FA2226-8992-062D-AA19-99AC61C42FCC, Topics Published: 1, Topics/Second: 0.33
+IP: 157.32.74.53, ID: auto-60D86B98-7280-759B-69D6-831E37F60483, Topics Published: 1, Topics/Second: 0.33
+IP: 157.32.74.53, ID: auto-2D246356-F8BB-0ECB-3B00-1F490A8B31BF, Topics Published: 1, Topics/Second: 0.01
+IP: 157.32.74.53, ID: auto-1122C37C-DD4C-86E4-DB79-1048EC72B85F, Topics Published: 1, Topics/Second: 0.03
+IP: 157.32.74.53, ID: auto-3F1F3017-56F5-479D-6E06-3BE8CBC6B5F5, Topics Published: 1, Topics/Second: 0.02
