@@ -1,2 +1,2 @@
-Flask
-scapy
+Flask==2.2.2
+scapy==2.4.5
